@@ -134,14 +134,14 @@ in {
     xdg.configFile."handsfree/config.toml".source =
       (tomlFormat.generate "handsfree-config.toml" filteredSettings);
 
-    systemd.user.services.handsfree = {
+    systemd.user.services.handsfreed = {
       Unit = {
         Description = "Handsfree speech-to-text daemon";
-        After = [ "network.target" "sound.target" ];
-        Requires = [ "graphical-session.target" ];
+        After = [ "graphical-session.target" "network.target" "sound.target" ];
+        PartOf = [ "graphical-session.target" ];
       };
 
-      Install = { WantedBy = [ "default.target" ]; };
+      Install = { WantedBy = [ "graphical-session.target" ]; };
 
       Service = {
         ExecStart = "${cfg.package}/bin/handsfreed";
