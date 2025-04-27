@@ -30,7 +30,7 @@ in {
       whisper = {
         beam_size = mkOption {
           type = types.ints.positive;
-          default = 5;
+          default = 3;
           description = mdDoc "Beam size for decoding.";
         };
         compute_type = mkOption {
@@ -85,12 +85,12 @@ in {
         };
         min_speech_duration_ms = mkOption {
           type = types.ints.unsigned;
-          default = 250;
+          default = 256;
           description = mdDoc "Min speech duration (ms) to process.";
         };
         min_silence_duration_ms = mkOption {
           type = types.ints.positive;
-          default = 1500;
+          default = 1024;
           description = mdDoc "Silence duration (ms) to end segment.";
         };
         max_speech_duration_s = mkOption {
@@ -100,7 +100,7 @@ in {
         };
         pre_roll_duration_ms = mkOption {
           type = types.ints.unsigned;
-          default = 200;
+          default = 192;
           description = mdDoc "Pre-roll audio duration (ms).";
         };
       };
