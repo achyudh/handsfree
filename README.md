@@ -261,24 +261,16 @@ current_status=$(handsfreectl status)
 
 case "$current_status" in
     "Idle")
-        # If idle, start transcription (defaulting to keyboard output)
-        logger -t handsfree-toggle "Status: Idle. Sending start command..."
         handsfreectl start --output keyboard # Or use --output clipboard
         ;;
     "Processing" | "Listening")
-        # If busy, stop transcription
-        logger -t handsfree-toggle "Status: $current_status. Sending stop command..."
         handsfreectl stop
         ;;
     "Inactive")
-        # Daemon not running or socket missing
-        logger -t handsfree-toggle "Status: Inactive. Daemon not running?"
         notify-send "Handsfree" "Daemon is inactive." # Optional notification
         ;;
     *)
-        # Handle unexpected status or errors from the status command itself
-        logger -t handsfree-toggle "Warning: Unknown status '$current_status' or error getting status."
-        notify-send "Handsfree Warning" "Unknown status: $current_status" # Optional
+        notify-send "Handsfree Warning" "Unknown status: $current_status" # Optional notification
         ;;
 esac
 
