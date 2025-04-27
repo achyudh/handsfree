@@ -8,6 +8,14 @@ Handsfree is a utility that provides fast, local speech-to-text transcription fo
 
 **Current Status:** Handsfree is in active development and used daily by the maintainer.
 
+**Key Features:**
+* Local & Private: All audio processing and transcription happens on your machine.
+* High-Quality Transcriptions: Leverages the `faster-whisper` library based on OpenAI's Whisper model for accurate results.
+* Flexible Control: Simple CLI (`handsfreectl`) that allows starting/stopping transcription, making it easy to integrate with various triggers like keyboard shortcuts, scripts or even foot pedals.
+* Configurable Output: Transcribed text can be output as simulated keyboard input or copied to the clipboard using external tools configurable via config.toml.
+* Voice Activity Detection (VAD): Optional VAD using the enterprise-grade Silero model allows automatic start/stop based on speech presence.
+* Configurable: Behavior tuned via a simple TOML configuration file.
+
 ## Motivation
 
 Handsfree aims to:
@@ -15,14 +23,6 @@ Handsfree aims to:
 * Fill a gap in easy-to-use **real-time dictation utilities** specifically for **Linux desktop environments**.
 * Provide a robust, **entirely offline** speech-to-text solution, keeping your data private.
 * Offer a flexible and customizable utility that is tailored to your workflow. You control how dictation is triggered (e.g., mapping `handsfreectl` commands to window manager keybindings) and how the daemon is managed (e.g., using the provided systemd user service).
-
-## Key Features:
-* Local & Private: All audio processing and transcription happens on your machine.
-* High-Quality Transcriptions: Leverages the `faster-whisper` library based on OpenAI's Whisper model for accurate results.
-* Flexible Control: Simple CLI (`handsfreectl`) that allows starting/stopping transcription, making it easy to integrate with various triggers like keyboard shortcuts, scripts or even foot pedals.
-* Configurable Output: Transcribed text can be output as simulated keyboard input or copied to the clipboard using external tools configurable via config.toml.
-* Voice Activity Detection (VAD): Optional VAD using the enterprise-grade Silero model allows automatic start/stop based on speech presence.
-* Configurable: Behavior tuned via a simple TOML configuration file.
 
 ## Installation
 
@@ -252,7 +252,7 @@ The most common way to use Handsfree is to bind keys in your window manager or h
 
 * Bind `Super + l` to run a toggle script
 
-```
+```bash
 #!/bin/sh
 
 # Simple toggle script for handsfreectl
