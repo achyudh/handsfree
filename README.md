@@ -62,8 +62,6 @@ This method requires you to manage dependencies and builds yourself.
 4.  **Configure:** Create the configuration file as described in the "Configuration" section below.
 5.  **Run:** Manually start the daemon (see "Usage") and use the compiled `handsfreectl` binary.
 
-**Call for Contributions:** Packaging for other distributions and other package managers is welcome! Please open an issue if you'd like to help make Handsfree more accessible.
-
 ### Nix Flake
 
 This is the easiest and most reproducible way to install and manage Handsfree if you use the Nix package manager with Flakes enabled.
@@ -133,7 +131,9 @@ This is the easiest and most reproducible way to install and manage Handsfree if
 
 3.  **Apply Configuration:** Run your NixOS or home-manager rebuild/switch command.
 
-## Configuration (`~/.config/handsfree/config.toml`)
+**Call for Contributions:** Packaging for other distributions and other package managers is welcome! Please open an issue if you'd like to help make Handsfree more accessible.
+
+## Configuration
 
 Handsfree uses a configuration file located at `~/.config/handsfree/config.toml`. If you are using the Nix home-manager module, the settings you provide there will generate this file automatically. If running manually, you need to create this file.
 
@@ -204,3 +204,102 @@ log_level = "INFO"
 # This is only used if VAD is disabled
 # time_chunk_s = 5.0
 ```
+
+## Usage
+
+### Daemon Management
+
+* **Manual / Development:** Open a terminal, navigate to the `handsfreed` source directory (and activate the venv if used), then run:
+    ```bash
+    python -m handsfreed
+    ```
+    Stop the daemon with `Ctrl+C`. Check stdout or the log file specified in the config (if configured) for details.
+* **Nix / Home Manager:** The `handsfreed` daemon runs as a systemd user service. It starts automatically on login. You can manage it using:
+    * Check status: `systemctl --user status handsfree.service`
+    * Start/Stop/Restart: `systemctl --user start|stop|restart handsfree.service`
+    * View logs: `journalctl --user -u handsfree.service -f`
+
+### CLI Usage
+
+The `handsfreectl` command communicates with the running `handsfreed` daemon.
+
+* **`handsfreectl start --output keyboard | clipboard`**
+    * Tells the daemon to start listening for speech.
+    * You can specify the output target for the transcribed text using `--output keyboard` (default) or `--output clipboard`.
+* **`handsfreectl stop`**
+    * Tells the daemon to stop the current listening/recording session.
+* **`handsfreectl status`**
+    * Queries the daemon's current state. Possible outputs:
+        * `Idle`: Waiting for the `start` command.
+        * `Listening`: Actively listening for speech (VAD enabled) or recording (time-based).
+        * `Processing`: Currently transcribing a segment.
+        * `Error`: The daemon encountered a critical error (check logs).
+        * `Inactive`: The `handsfreectl status` command could not connect to the daemon socket (daemon likely not running).
+    * If the state is `Error`, the specific error message might be printed on the next line.
+* **`handsfreectl shutdown`**
+    * Tells the daemon process to shut down cleanly. Useful primarily when running the daemon manually.
+
+### Example Workflow & Keybindings
+
+The most common way to use Handsfree is to bind keys in your window manager or hotkey daemon to execute `handsfreectl start` and `handsfreectl stop`.
+
+**Example 1:**
+
+* Bind `Super + l` to run `handsfreectl start --output keyboard`
+* Bind `Super + Shift + l` to run `handsfreectl stop`
+
+**Example 2:**
+
+* Bind `Super + l` to run a toggle script
+
+```
+#!/bin/sh
+
+# Simple toggle script for handsfreectl
+
+current_status=$(handsfreectl status)
+
+case "$current_status" in
+    "Idle")
+        # If idle, start transcription (defaulting to keyboard output)
+        logger -t handsfree-toggle "Status: Idle. Sending start command..."
+        handsfreectl start --output keyboard # Or use --output clipboard
+        ;;
+    "Processing" | "Listening")
+        # If busy, stop transcription
+        logger -t handsfree-toggle "Status: $current_status. Sending stop command..."
+        handsfreectl stop
+        ;;
+    "Inactive")
+        # Daemon not running or socket missing
+        logger -t handsfree-toggle "Status: Inactive. Daemon not running?"
+        notify-send "Handsfree" "Daemon is inactive." # Optional notification
+        ;;
+    *)
+        # Handle unexpected status or errors from the status command itself
+        logger -t handsfree-toggle "Warning: Unknown status '$current_status' or error getting status."
+        notify-send "Handsfree Warning" "Unknown status: $current_status" # Optional
+        ;;
+esac
+
+exit 0
+```
+
+## Troubleshooting
+
+* **`handsfreectl status` shows `Inactive`:** The `handsfreed` daemon is not running or `handsfreectl` cannot find the communication socket (`daemon.sock`). Check the service status (`systemctl --user status handsfree.service`) and daemon logs (`journalctl` or the log file). Ensure socket paths match if configured manually.
+* **`handsfreectl` shows Connection Error / Communication Error:** Daemon might have crashed, or there might be permission issues with the socket file. Check daemon logs.
+* **No transcription output:** Check `config.toml` `[output]` commands are correct for your system (Wayland/X11) and the required tools (`wtype`, `xdotool`, `wl-copy`, `xclip`) are installed and in your `$PATH`. Check daemon logs for transcription or output errors.
+* **VAD doesn't trigger / triggers too often / cuts off speech:** Adjust parameters in the `[vad]` section of `config.toml`, particularly `threshold`, `neg_threshold`, `min_silence_duration_ms`, and `pre_roll_duration_ms`. Check daemon logs for VAD state transitions (enable `DEBUG` level).
+
+## License
+
+This project is licensed under the GNU General Public License v3.0.
+
+## Acknowledgements
+
+Handsfree would not exist without several fantastic open-source projects:
+
+* [SYSTRAN/faster-whisper](https://github.com/SYSTRAN/faster-whisper) by  for providing blazing fast Whisper implementation.
+* [snakers4/silero-vad](https://github.com/snakers4/silero-vad) for a fast, enterprise-grade VAD implementation.
+* [KoljaB/RealtimeSTT](https://github.com/KoljaB/RealtimeSTT) whose source code provided valuable insights and inspiration for VAD and real-time processing approaches.
