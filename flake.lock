@@ -37,11 +37,11 @@
     "handsfreed-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1749407072,
-        "narHash": "sha256-ShEHS9RzDNF816sVdp0WZLmkGE6o0XQJLaACwd5u9PI=",
+        "lastModified": 1762897379,
+        "narHash": "sha256-gDlezHJzzMtx1CHqm3R2QfHPanDAS0QbLwf5sl1P540=",
         "owner": "achyudh",
         "repo": "handsfreed",
-        "rev": "28dc50bc954ea96a36bd83b09b3d39b7e0a202e4",
+        "rev": "1e3066847b2341d1a322c1be8629209ea821e10f",
         "type": "github"
       },
       "original": {
