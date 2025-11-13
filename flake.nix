@@ -27,7 +27,7 @@
       systemSpecificOutputs = flake-utils.lib.eachDefaultSystem (system:
         let
           pkgs = import nixpkgs { inherit system; };
-          pythonPackages = pkgs.python313Packages;
+          pythonPackages = pkgs.python3Packages;
 
           handsfreectl-pkg = pkgs.callPackage ./packages/handsfreectl.nix {
             inherit pkgs;

@@ -27,6 +27,24 @@ in {
     };
 
     settings = {
+      audio = {
+        input_gain = mkOption {
+          type = types.float;
+          default = 1.0;
+          description = mdDoc "Input gain multiplier (1.0 = no gain).";
+        };
+        dc_offset_correction = mkOption {
+          type = types.bool;
+          default = true;
+          description = mdDoc "Enable DC offset correction.";
+        };
+        dc_offset_window_ms = mkOption {
+          type = types.ints.unsigned;
+          default = 512;
+          description = mdDoc "Window size (ms) for DC offset correction.";
+        };
+      };
+
       whisper = {
         beam_size = mkOption {
           type = types.ints.positive;
@@ -129,7 +147,7 @@ in {
   };
 
   config = mkIf cfg.enable {
-    home.packages = [ cfg.package cfg.ctlPackage ];
+    home.packages = [ cfg.ctlPackage ];
 
     xdg.configFile."handsfree/config.toml".source =
       (tomlFormat.generate "handsfree-config.toml" filteredSettings);
