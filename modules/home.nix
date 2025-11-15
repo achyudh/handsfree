@@ -119,7 +119,8 @@ in {
         pre_roll_duration_ms = mkOption {
           type = types.ints.unsigned;
           default = 192;
-          description = mdDoc "Pre-roll audio duration (ms).";
+          description = mdDoc
+            "Pre-roll duration (ms) to include before a detected speech segment.";
         };
       };
 
