@@ -1,7 +1,5 @@
 # Handsfree
 
-[![handsfreectl CI](https://github.com/achyudh/handsfreectl/actions/workflows/ci.yml/badge.svg)](https://github.com/achyudh/handsfreectl/actions/workflows/ci.yml)
-[![handsfreed CI](https://github.com/achyudh/handsfreed/actions/workflows/ci.yml/badge.svg)](https://github.com/achyudh/handsfreed/actions/workflows/ci.yml)
 [![Crates.io](https://img.shields.io/crates/v/handsfreectl.svg)](https://crates.io/crates/handsfreectl)
 [![PyPI](https://img.shields.io/pypi/v/handsfreed.svg)](https://pypi.org/project/handsfreed/)
 [![License](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
