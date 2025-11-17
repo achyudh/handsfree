@@ -26,45 +26,47 @@ Handsfree aims to:
 
 ## Installation
 
-There are two main ways to install Handsfree: using the Nix Flake (recommended for most users) or building manually (primarily for contributors or non-Nix users).
-
 ### Manual Installation
 
-This method requires you to manage dependencies and builds yourself.
+**1. Install System Dependencies**
 
-**Prerequisites:**
+First, you need to install the `PortAudio` library, which is required by the `handsfreed` daemon for audio processing.
 
-* **Rust:** Latest stable version (`rustc` and `cargo`). Required for `handsfreectl`.
-* **Python:** Version 3.11 or later with `pip` and `venv`. Required for the `handsfreed` daemon.
-* **System Dependencies:** Libraries needed by Python packages (`portaudio`, `libasound2-dev` (or equivalent) for `sounddevice`). Installation methods vary by distribution.
-
-**Steps:**
-
-1.  **Clone Repositories:**
+*   **Debian/Ubuntu:**
     ```bash
-    git clone [https://github.com/achyudh/handsfreectl.git](https://github.com/achyudh/handsfreectl.git)
-    git clone [https://github.com/achyudh/handsfreed.git](https://github.com/achyudh/handsfreed.git)
+    sudo apt-get install portaudio19-dev
     ```
-2.  **Build `handsfreectl`:**
+*   **Fedora/CentOS/RHEL:**
     ```bash
-    cd handsfreectl
-    cargo build --release
-    # Optional: Copy target/release/handsfreectl to a location in your $PATH
-    cd ..
+    sudo dnf install portaudio-devel
     ```
-3.  **Set up `handsfreed`:**
+*   **Arch Linux:**
     ```bash
-    cd handsfreed
-    python -m venv .venv
-    source .venv/bin/activate
-    pip install -e .
+    sudo pacman -S portaudio
     ```
-4.  **Configure:** Create the configuration file as described in the "Configuration" section below.
-5.  **Run:** Manually start the daemon (see "Usage") and use the compiled `handsfreectl` binary.
+
+**2. Install Handsfree**
+
+Install the two main components, `handsfreed` (the daemon) and `handsfreectl` (the controller), from their respective package managers.
+
+*   **Install `handsfreed` from PyPI:**
+    ```bash
+    pip install handsfreed
+    ```
+*   **Install `handsfreectl`:**
+    *   From Crates.io:
+        ```bash
+        cargo install handsfreectl
+        ```
+    *   You can also download pre-compiled binaries from the [handsfreectl releases page](https://github.com/achyudh/handsfreectl/releases).
+
+**3. Configure and Run**
+
+After installation, you need to:
+1.  Create a configuration file as described in the [Configuration](#configuration) section.
+2.  Run the daemon as described in the [Usage](#usage) section.
 
 ### Nix Flake
-
-This is the easiest and most reproducible way to install and manage Handsfree if you use the Nix package manager with Flakes enabled.
 
 **Prerequisites:**
 
