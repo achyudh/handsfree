@@ -20,6 +20,15 @@ Handsfree is a utility that provides fast, local speech-to-text transcription fo
 * Voice Activity Detection (VAD): Optional VAD using the enterprise-grade Silero model allows automatic start/stop based on speech presence.
 * Configurable: Behavior tuned via a simple TOML configuration file.
 
+Handsfree consists of two main components:
+
+*   **`handsfreed`**: The Python daemon responsible for audio processing and speech-to-text transcription.
+    *   [Repository](https://github.com/achyudh/handsfreed)
+    *   [PyPI Package](https://pypi.org/project/handsfreed/)
+*   **`handsfreectl`**: The Rust command-line interface for controlling the `handsfreed` daemon.
+    *   [Repository](https://github.com/achyudh/handsfreectl)
+    *   [Crates.io Package](https://crates.io/crates/handsfreectl)
+
 ## Motivation
 
 Handsfree aims to:
@@ -196,6 +205,9 @@ neg_threshold = 0.35
 
 # Maximum speech duration in seconds (0 = unlimited)
 max_speech_duration_s = 0.0
+
+# Maximum duration in seconds before listening stops (0 = disabled)
+auto_disable_duration_s = 5.0
 
 [output]
 # Command to execute for keyboard output

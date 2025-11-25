@@ -116,6 +116,12 @@ in {
           default = 30.0;
           description = mdDoc "Max segment duration (s) (0=infinity).";
         };
+        auto_disable_duration_s = mkOption {
+          type = types.float;
+          default = 5.0;
+          description = mdDoc
+            "Maximum duration in seconds before listening stops (0 = disabled).";
+        };
         pre_roll_duration_ms = mkOption {
           type = types.ints.unsigned;
           default = 192;
