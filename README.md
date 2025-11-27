@@ -242,6 +242,13 @@ log_level = "INFO"
     python -m handsfreed
     ```
     Stop the daemon with `Ctrl+C`. Check stdout or the log file specified in the config (if configured) for details.
+
+* **PyPI Installation:** If you installed via `pip`, the `handsfreed` command should be in your PATH.
+    ```bash
+    handsfreed
+    ```
+    You can also set up a systemd user service manually if desired.
+
 * **Nix / Home Manager:** The `handsfreed` daemon runs as a systemd user service. It starts automatically on login. You can manage it using:
     * Check status: `systemctl --user status handsfree.service`
     * Start/Stop/Restart: `systemctl --user start|stop|restart handsfree.service`
@@ -249,61 +256,36 @@ log_level = "INFO"
 
 ### CLI Usage
 
-The `handsfreectl` command communicates with the running `handsfreed` daemon.
+The `handsfreectl` command communicates with the running `handsfreed` daemon. An easy way to get started is to bind keys in your window manager or hotkey daemon to execute `handsfreectl toggle`.
 
-* **`handsfreectl start --output keyboard | clipboard`**
-    * Tells the daemon to start listening for speech.
-    * You can specify the output target for the transcribed text using `--output keyboard` (default) or `--output clipboard`.
-* **`handsfreectl stop`**
-    * Tells the daemon to stop the current listening/recording session.
-* **`handsfreectl status`**
-    * Queries the daemon's current state. Possible outputs:
-        * `Idle`: Waiting for the `start` command.
-        * `Listening`: Actively listening for speech (VAD enabled) or recording (time-based).
-        * `Processing`: Currently transcribing a segment.
-        * `Error`: The daemon encountered a critical error (check logs).
-        * `Inactive`: The `handsfreectl status` command could not connect to the daemon socket (daemon likely not running).
-    * If the state is `Error`, the specific error message might be printed on the next line.
-* **`handsfreectl shutdown`**
-    * Tells the daemon process to shut down cleanly. Useful primarily when running the daemon manually.
+* **Start Transcription:** Explicitly tells the daemon to start listening.
+    ```bash
+    handsfreectl start --output keyboard  # Default
+    handsfreectl start --output clipboard
+    ```
+* **Stop Transcription:** Explicitly tells the daemon to stop the current listening session.
+    ```bash
+    handsfreectl stop
+    ```
+* **Toggle Transcription:** Toggles the transcription state. If `Idle`, it starts listening. If `Listening`, it stops. This is ideal for binding to a single hotkey.
+    ```bash
+    handsfreectl toggle
+    handsfreectl toggle --output clipboard
+    ```
+* **Check Status:** Queries the daemon's current state once.
+    ```bash
+    handsfreectl status
+    ```
+    Possible outputs include `Idle`, `Listening`, `Processing`, `Error`, or `Inactive`.
 
-### Example Workflow & Keybindings
-
-The most common way to use Handsfree is to bind keys in your window manager or hotkey daemon to execute `handsfreectl start` and `handsfreectl stop`.
-
-**Example 1:**
-
-* Bind `Super + l` to run `handsfreectl start --output keyboard`
-* Bind `Super + Shift + l` to run `handsfreectl stop`
-
-**Example 2:**
-
-* Bind `Super + l` to run a toggle script
-
-```bash
-#!/bin/sh
-
-# Simple toggle script for handsfreectl
-
-current_status=$(handsfreectl status)
-
-case "$current_status" in
-    "Idle")
-        handsfreectl start --output keyboard # Or use --output clipboard
-        ;;
-    "Processing" | "Listening")
-        handsfreectl stop
-        ;;
-    "Inactive")
-        notify-send "Handsfree" "Daemon is inactive." # Optional notification
-        ;;
-    *)
-        notify-send "Handsfree Warning" "Unknown status: $current_status" # Optional notification
-        ;;
-esac
-
-exit 0
-```
+* **Watch Status:** Streams status updates in real-time. Efficient for status bars (like Waybar or Polybar) as it avoids polling.
+    ```bash
+    handsfreectl watch
+    ```
+* **Shutdown Daemon:** Tells the `handsfreed` process to shut down cleanly.
+    ```bash
+    handsfreectl shutdown
+    ```
 
 ## Troubleshooting
 
